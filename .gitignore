@@ -1,0 +1,14 @@
+node_modules
+.env
+.env.*
+dist
+.next
+coverage
+*.log
+*.sqlite
+*.local
+.idea
+.vscode
+.DS_Store
+apps/web/.next
+apps/api/dist

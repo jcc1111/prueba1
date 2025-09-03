@@ -1,0 +1,33 @@
+// apps/api: Backend NestJS
+// apps/web: Frontend Next.js
+// packages/db: Prisma schema y utilidades
+
+apps/
+  api/
+  web/
+packages/
+  db/
+.dockerignore
+.env.example
+.gitignore
+.prettierignore
+.prettierrc
+.eslintrc.cjs
+turbo.json
+README.md
+.github/
+  copilot-instructions.md
+.vscode/
+  tasks.json
+
+# Docker
+Dockerfile
+Dockerfile.web
+Dockerfile.api
+docker-compose.yml
+
+# NGINX/Caddy
+nginx.conf
+
+# Placeholder logo
+apps/web/public/logo.svg

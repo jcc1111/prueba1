@@ -1,0 +1,200 @@
+// Prisma schema para TuArica
+// Modelos: categoria, subcategoria, usuario, comercio, producto, resena, mensaje_contacto, suscripcion, membresia, pago, horario, imagen, favorito
+// Convenciones: snake_case, @map/@@map, PK/FK por id, cod_... y slug_... únicos, timestamps, relaciones por id, ubicacion_geografica como Unsupported
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model categoria {
+  id_categoria        Int      @id @default(autoincrement()) @map("id_categoria")
+  cod_categoria       String   @unique @db.Char(2) @map("cod_categoria")
+  nombre              String   @map("nombre")
+  slug_categoria      String   @unique @map("slug_categoria")
+  f_creacion          DateTime @default(now()) @map("f_creacion")
+  f_actualizacion     DateTime @updatedAt @map("f_actualizacion")
+  subcategorias       subcategoria[]
+
+  @@map("categoria")
+}
+
+model subcategoria {
+  id_subcategoria     Int      @id @default(autoincrement()) @map("id_subcategoria")
+  id_categoria        Int      @map("id_categoria")
+  cod_subcategoria    String   @unique @db.Char(3) @map("cod_subcategoria")
+  nombre              String   @map("nombre")
+  slug_subcategoria   String   @unique @map("slug_subcategoria")
+  f_creacion          DateTime @default(now()) @map("f_creacion")
+  f_actualizacion     DateTime @updatedAt @map("f_actualizacion")
+  categoria           categoria @relation(fields: [id_categoria], references: [id_categoria])
+  comercios           comercio[]
+
+  @@map("subcategoria")
+}
+
+model usuario {
+  id_usuario          Int      @id @default(autoincrement()) @map("id_usuario")
+  email               String   @unique @map("email")
+  nombre              String   @map("nombre")
+  password            String   @map("password")
+  rol                 String   @default("comerciante") @map("rol")
+  f_creacion          DateTime @default(now()) @map("f_creacion")
+  f_actualizacion     DateTime @updatedAt @map("f_actualizacion")
+  comercios           comercio[]
+  resenas             resena[]
+  favoritos           favorito[]
+  suscripciones       suscripcion[]
+
+  @@map("usuario")
+}
+
+model comercio {
+  id_comercio         Int      @id @default(autoincrement()) @map("id_comercio")
+  id_subcategoria     Int      @map("id_subcategoria")
+  id_usuario          Int      @map("id_usuario")
+  cod_comercio        String   @unique @db.Char(6) @map("cod_comercio")
+  nombre              String   @map("nombre")
+  slug_comercio       String   @unique @map("slug_comercio")
+  descripcion         String?  @map("descripcion")
+  // ubicacion_geografica Unsupported("geometry(Point,4326)") @map("ubicacion_geografica")
+  ubicacion_geografica String? @map("ubicacion_geografica") // Temporal: será geometry después de habilitar PostGIS
+  direccion           String?  @map("direccion")
+  telefono            String?  @map("telefono")
+  web                 String?  @map("web")
+  f_creacion          DateTime @default(now()) @map("f_creacion")
+  f_actualizacion     DateTime @updatedAt @map("f_actualizacion")
+  subcategoria        subcategoria @relation(fields: [id_subcategoria], references: [id_subcategoria])
+  usuario             usuario @relation(fields: [id_usuario], references: [id_usuario])
+  productos           producto[]
+  resenas             resena[]
+  imagenes            imagen[]
+  horarios            horario[]
+  favoritos           favorito[]
+  mensajes_contacto   mensaje_contacto[]
+  suscripciones       suscripcion[]
+
+  @@map("comercio")
+}
+
+model producto {
+  id_producto         Int      @id @default(autoincrement()) @map("id_producto")
+  id_comercio         Int      @map("id_comercio")
+  cod_producto        String   @unique @db.Char(9) @map("cod_producto")
+  nombre              String   @map("nombre")
+  slug_producto       String   @unique @map("slug_producto")
+  descripcion         String?  @map("descripcion")
+  precio              Float?   @map("precio")
+  f_creacion          DateTime @default(now()) @map("f_creacion")
+  f_actualizacion     DateTime @updatedAt @map("f_actualizacion")
+  comercio            comercio @relation(fields: [id_comercio], references: [id_comercio])
+  imagenes            imagen[]
+  resenas             resena[]
+  favoritos           favorito[]
+
+  @@map("producto")
+}
+
+model resena {
+  id_resena           Int      @id @default(autoincrement()) @map("id_resena")
+  id_usuario          Int      @map("id_usuario")
+  id_comercio         Int?     @map("id_comercio")
+  id_producto         Int?     @map("id_producto")
+  calificacion        Int      @map("calificacion")
+  comentario          String?  @map("comentario")
+  f_creacion          DateTime @default(now()) @map("f_creacion")
+  usuario             usuario  @relation(fields: [id_usuario], references: [id_usuario])
+  comercio            comercio? @relation(fields: [id_comercio], references: [id_comercio])
+  producto            producto? @relation(fields: [id_producto], references: [id_producto])
+
+  @@map("resena")
+}
+
+model mensaje_contacto {
+  id_mensaje_contacto Int      @id @default(autoincrement()) @map("id_mensaje_contacto")
+  id_comercio         Int      @map("id_comercio")
+  nombre              String   @map("nombre")
+  email               String   @map("email")
+  mensaje             String   @map("mensaje")
+  f_creacion          DateTime @default(now()) @map("f_creacion")
+  comercio            comercio @relation(fields: [id_comercio], references: [id_comercio])
+
+  @@map("mensaje_contacto")
+}
+
+model suscripcion {
+  id_suscripcion      Int      @id @default(autoincrement()) @map("id_suscripcion")
+  id_usuario          Int      @map("id_usuario")
+  id_comercio         Int      @map("id_comercio")
+  id_membresia        Int      @map("id_membresia")
+  f_inicio            DateTime @default(now()) @map("f_inicio")
+  f_fin               DateTime? @map("f_fin")
+  usuario             usuario  @relation(fields: [id_usuario], references: [id_usuario])
+  comercio            comercio @relation(fields: [id_comercio], references: [id_comercio])
+  membresia           membresia @relation(fields: [id_membresia], references: [id_membresia])
+  pagos               pago[]
+
+  @@map("suscripcion")
+}
+
+model membresia {
+  id_membresia        Int      @id @default(autoincrement()) @map("id_membresia")
+  nombre              String   @map("nombre")
+  descripcion         String?  @map("descripcion")
+  precio_mensual      Float    @map("precio_mensual")
+  cod_membresia       String   @unique @map("cod_membresia")
+  slug_membresia      String   @unique @map("slug_membresia")
+  f_creacion          DateTime @default(now()) @map("f_creacion")
+  f_actualizacion     DateTime @updatedAt @map("f_actualizacion")
+  suscripciones       suscripcion[]
+
+  @@map("membresia")
+}
+
+model pago {
+  id_pago             Int      @id @default(autoincrement()) @map("id_pago")
+  id_suscripcion      Int      @map("id_suscripcion")
+  monto               Float    @map("monto")
+  fecha_pago          DateTime @default(now()) @map("fecha_pago")
+  suscripcion         suscripcion @relation(fields: [id_suscripcion], references: [id_suscripcion])
+
+  @@map("pago")
+}
+
+model horario {
+  id_horario          Int      @id @default(autoincrement()) @map("id_horario")
+  id_comercio         Int      @map("id_comercio")
+  dia_semana          Int      @map("dia_semana")
+  hora_apertura       String   @map("hora_apertura")
+  hora_cierre         String   @map("hora_cierre")
+  comercio            comercio @relation(fields: [id_comercio], references: [id_comercio])
+
+  @@map("horario")
+}
+
+model imagen {
+  id_imagen           Int      @id @default(autoincrement()) @map("id_imagen")
+  id_comercio         Int?     @map("id_comercio")
+  id_producto         Int?     @map("id_producto")
+  url                 String   @map("url")
+  comercio            comercio? @relation(fields: [id_comercio], references: [id_comercio])
+  producto            producto? @relation(fields: [id_producto], references: [id_producto])
+
+  @@map("imagen")
+}
+
+model favorito {
+  id_favorito         Int      @id @default(autoincrement()) @map("id_favorito")
+  id_usuario          Int      @map("id_usuario")
+  id_comercio         Int?     @map("id_comercio")
+  id_producto         Int?     @map("id_producto")
+  usuario             usuario  @relation(fields: [id_usuario], references: [id_usuario])
+  comercio            comercio? @relation(fields: [id_comercio], references: [id_comercio])
+  producto            producto? @relation(fields: [id_producto], references: [id_producto])
+
+  @@map("favorito")
+}
