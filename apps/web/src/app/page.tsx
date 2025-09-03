@@ -1,7 +1,15 @@
 import Image from "next/image";
+import Link from "next/link";
 
 // Función para obtener categorías del backend
-async function getCategorias() {
+interface Categoria {
+	id_categoria: number;
+	cod_categoria: string;
+	nombre: string;
+	slug_categoria: string;
+}
+
+async function getCategorias(): Promise<Categoria[]> {
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/categorias`, {
 			cache: 'no-store' // Para obtener datos frescos
@@ -16,8 +24,10 @@ async function getCategorias() {
 		console.error('Error fetching categorías:', error);
 		// Fallback en caso de error
 		return [
-			{ cod_categoria: "01", nombre: "Restaurantes", slug_categoria: "restaurantes" },
-			{ cod_categoria: "02", nombre: "Servicios", slug_categoria: "servicios" },
+			{ id_categoria: 1, cod_categoria: "01", nombre: "Restaurantes", slug_categoria: "restaurantes" },
+			{ id_categoria: 2, cod_categoria: "02", nombre: "Servicios", slug_categoria: "servicios" },
+			{ id_categoria: 3, cod_categoria: "03", nombre: "Hoteles", slug_categoria: "hoteles" },
+			{ id_categoria: 4, cod_categoria: "04", nombre: "Comercio", slug_categoria: "comercio" }
 		];
 	}
 }
@@ -78,8 +88,8 @@ export default async function Home() {
 						Explora por categorías
 					</h2>
 					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-						{categorias.map((categoria: any) => (
-							<a
+						{categorias.map((categoria: Categoria) => (
+							<Link
 								key={categoria.cod_categoria}
 								href={`/categoria/${categoria.slug_categoria}`}
 								className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 text-center border border-blue-100 hover:border-blue-300"
@@ -101,7 +111,7 @@ export default async function Home() {
 										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
 									</svg>
 								</div>
-							</a>
+							</Link>
 						))}
 					</div>
 				</section>
@@ -133,7 +143,7 @@ export default async function Home() {
 								</svg>
 								Calle Principal 123, Santo Domingo
 							</div>
-							<a
+							<Link
 								href="/comercio/restaurante-el-sabor"
 								className="inline-flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium"
 							>
@@ -141,7 +151,7 @@ export default async function Home() {
 								<svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
 								</svg>
-							</a>
+							</Link>
 						</div>
 					</div>
 				</section>

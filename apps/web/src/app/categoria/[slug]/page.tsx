@@ -44,7 +44,7 @@ export default function CategoriaPage() {
     }
   }, [params.slug]);
 
-  const fetchCategoriaYComercios = async (slug: string) => {
+  const fetchCategoriaYComercios = async (slugParam: string) => {
     try {
       setLoading(true);
       
@@ -53,7 +53,7 @@ export default function CategoriaPage() {
         id_categoria: 1,
         cod_categoria: "01",
         nombre: "Restaurantes",
-        slug_categoria: "restaurantes"
+        slug_categoria: slugParam
       };
 
       const mockComercios: Comercio[] = [

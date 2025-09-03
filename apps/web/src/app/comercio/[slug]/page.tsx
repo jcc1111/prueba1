@@ -43,7 +43,7 @@ export default function ComercioPage() {
     }
   }, [params.slug]);
 
-  const fetchComercio = async (slug: string) => {
+  const fetchComercio = async (slugParam: string) => {
     try {
       setLoading(true);
       
@@ -52,7 +52,7 @@ export default function ComercioPage() {
         id_comercio: 1,
         cod_comercio: "COM001",
         nombre: "Restaurante El Sabor",
-        slug_comercio: "restaurante-el-sabor",
+        slug_comercio: slugParam,
         descripcion: "El mejor sabor de la ciudad. Ofrecemos comida rápida de alta calidad con ingredientes frescos y sabores auténticos que te harán volver por más.",
         direccion: "Calle Principal 123, Santo Domingo",
         telefono: "809-555-0123",
