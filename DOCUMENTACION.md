@@ -428,16 +428,15 @@ npx tsx packages/db/seed.ts
 ```
 
 #### Backend (Railway/Heroku)
-```dockerfile
-# Dockerfile.api
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
-EXPOSE 5000
-CMD ["npm", "run", "start:prod"]
+```javascript
+// package.json scripts for production
+{
+  "scripts": {
+    "start": "node dist/main.js",
+    "build": "npm run build",
+    "start:prod": "node dist/main.js"
+  }
+}
 ```
 
 ---

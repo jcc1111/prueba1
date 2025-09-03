@@ -139,7 +139,7 @@
 ## 🌐 Deployment & Infrastructure
 
 ### Current Setup
-- **Local Development** - Docker opcional
+- **Local Development** - Desarrollo directo con Node.js
 - **Prisma Cloud** - Base de datos en la nube
 - **Git** - Control de versiones
 
@@ -147,7 +147,6 @@
 - **[Vercel](https://vercel.com/)** - Frontend deployment
 - **[Railway](https://railway.app/)** - Backend deployment
 - **[Heroku](https://heroku.com/)** - Fullstack deployment
-- **[Docker](https://docker.com/)** - Containerización
 
 ---
 
